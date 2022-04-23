@@ -1,7 +1,7 @@
 import express from "express";
 
 import { registerUser } from "../controllers/userController.js";
-import avatarUpload from "../middlewares/avatarUpload.js";
+import { avatarUpload } from "../middlewares/imageUpload.js";
 
 const router = express.Router();
 

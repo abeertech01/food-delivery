@@ -1,7 +1,16 @@
 import ErrorHandler from "../utils/errorHandler.js";
 import uploader from "../utils/imageUploader.js";
 
-function avatarUpload(req, res, next) {
+export function prodImageUpload() {
+  return uploader(
+    "products",
+    ["image/jpeg", "image/jpg", "image/png"],
+    10000000,
+    "Only .jpg, .jpeg or .png format allowed"
+  ).array("prodImage", 5);
+}
+
+export function avatarUpload(req, res, next) {
   const upload = uploader(
     "avatars",
     ["image/jpeg", "image/jpg", "image/png"],
@@ -17,5 +26,3 @@ function avatarUpload(req, res, next) {
     }
   });
 }
-
-export default avatarUpload;
