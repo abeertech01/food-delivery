@@ -27,10 +27,22 @@ export const productDetails = checkAsyncError(async (req, res, next) => {
   });
 });
 
-// Create A Product
+// Create A New Product
 export const newProduct = checkAsyncError(async (req, res, next) => {
+  const filenames = [];
+
+  for (const file in req.files) {
+    filenames.push(req.files[file].filename);
+  }
+
+  const { name, description, price, quantity } = req.body;
+
   const product = new Product({
-    ...req.body,
+    name,
+    description,
+    price,
+    quantity,
+    images: filenames,
   });
 
   await product.save();

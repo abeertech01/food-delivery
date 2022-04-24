@@ -4,6 +4,8 @@ const prodSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, "Please Enter Product Name"],
+    maxlength: [80, "Name cannot exceed 80 characters"],
+    minlength: [2, "Name should have 2 or more than 2 characters"],
     trim: true,
   },
   description: {
@@ -18,11 +20,14 @@ const prodSchema = new mongoose.Schema({
   quantity: {
     type: Number,
     required: [true, "Please Enter Product Quantity"],
+    default: 1,
   },
-  image: {
-    type: String,
-    // required: true,
-  },
+  images: [
+    {
+      type: String,
+      required: true,
+    },
+  ],
   createdAt: {
     type: Date,
     default: Date.now,

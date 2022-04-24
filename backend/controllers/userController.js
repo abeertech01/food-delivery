@@ -1,5 +1,6 @@
 import checkAsyncError from "../middlewares/checkAsyncError.js";
 import User from "../models/userModel.js";
+import ErrorHandler from "../utils/errorHandler.js";
 import sendToken from "../utils/jwtToken.js";
 
 // Register a user
@@ -25,4 +26,40 @@ export const registerUser = checkAsyncError(async (req, res, next) => {
   await user.save();
 
   sendToken(user, 201, res);
+});
+
+// Login
+export const loginUser = checkAsyncError(async (req, res, next) => {
+  const { email, password } = req.body;
+
+  // Checking if user has given password and email both
+  if (!email || !password) {
+    return next(new ErrorHandler("Please Enter Email & Password", 400));
+  }
+
+  const user = await User.findOne({ email }).select("+password");
+
+  if (!user) {
+    return next(new ErrorHandler("Invalid email or password", 401));
+  }
+
+  const isPasswordMatched = await user.comparePassword(password);
+
+  if (!isPasswordMatched) {
+    return next(new ErrorHandler("Invalid email or password", 401));
+  }
+
+  sendToken(user, 200, res);
+});
+
+// Logout
+export const logoutUser = checkAsyncError(async (req, res, next) => {
+  res.cookie("jwtToken", null, {
+    expires: new Date(Date.now()),
+    httpOnly: true,
+  });
+  res.status(200).json({
+    success: true,
+    message: "Logged Out",
+  });
 });
