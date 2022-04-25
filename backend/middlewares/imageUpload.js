@@ -18,6 +18,23 @@ export function prodImageUpload(req, res, next) {
   });
 }
 
+export function singleImageUpload(req, res, next) {
+  const upload = uploader(
+    "products",
+    ["image/jpeg", "image/jpg", "image/png"],
+    5000000,
+    "Only .jpg, .jpeg or .png format allowed"
+  );
+
+  upload.any()(req, res, (err) => {
+    if (err) {
+      next(new ErrorHandler(err.message, 500));
+    } else {
+      next();
+    }
+  });
+}
+
 export function avatarUpload(req, res, next) {
   const upload = uploader(
     "avatars",
