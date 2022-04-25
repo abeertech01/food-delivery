@@ -10,6 +10,7 @@ import {
   productDetails,
   updateProduct,
 } from "../controllers/productController.js";
+import checkProduct from "../middlewares/checkProduct.js";
 import {
   prodImageUpload,
   singleImageUpload,
@@ -18,7 +19,7 @@ import {
 const router = express.Router();
 
 router.route("/products").get(getProducts);
-router.route("/new-product").post(prodImageUpload, newProduct);
+router.route("/new-product").post(prodImageUpload, checkProduct, newProduct);
 router
   .route("/products/:id")
   .get(productDetails)

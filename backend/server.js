@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import path from "path";
 
@@ -12,8 +13,8 @@ const __dirname = path.resolve();
 
 dotenv.config();
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 

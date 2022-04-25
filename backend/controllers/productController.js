@@ -1,4 +1,4 @@
-import { unlink } from "fs";
+import fs, { unlink } from "fs";
 import path from "path";
 
 // internal
@@ -34,28 +34,34 @@ export const productDetails = checkAsyncError(async (req, res, next) => {
 
 // Create A New Product
 export const newProduct = checkAsyncError(async (req, res, next) => {
-  const filenames = [];
-
-  for (const file in req.files) {
-    filenames.push(req.files[file].filename);
-  }
-
   const { name, description, price, quantity } = req.body;
 
-  const product = new Product({
-    name,
-    description,
-    price,
-    quantity,
-    images: filenames,
-  });
+  const record = await Product.findOne({ name });
 
-  await product.save();
+  if (record) {
+    next(new ErrorHandler("This product is already in menu", 400));
+  } else {
+    const filenames = [];
 
-  res.status(201).json({
-    success: true,
-    product,
-  });
+    for (const file in req.files) {
+      filenames.push(req.files[file].filename);
+    }
+
+    const product = new Product({
+      name,
+      description,
+      price,
+      quantity,
+      images: filenames,
+    });
+
+    await product.save();
+
+    res.status(201).json({
+      success: true,
+      product,
+    });
+  }
 });
 
 // Update A Product
@@ -160,10 +166,16 @@ export const deleteProduct = checkAsyncError(async (req, res, next) => {
 
 // Helping function
 function deleteImage(filename) {
-  unlink(
-    path.join(__dirname, `/public/uploads/products/${filename}`),
-    (err) => {
-      if (err) next(new ErrorHandler(err.message, 400));
-    }
-  );
+  const dir = path.join(__dirname, `/public/uploads/products`);
+  const files = fs.readdirSync(dir);
+  const doesExists = files.some((el) => el === filename);
+
+  if (doesExists) {
+    unlink(
+      path.join(__dirname, `/public/uploads/products/${filename}`),
+      (err) => {
+        if (err) next(new ErrorHandler(err.message, 400));
+      }
+    );
+  }
 }
