@@ -1,5 +1,4 @@
 import express from "express";
-import multer from "multer";
 
 import {
   addProductImage,
@@ -10,6 +9,7 @@ import {
   productDetails,
   updateProduct,
 } from "../controllers/productController.js";
+import { authorizeRoles, isAuthenticated } from "../middlewares/auth.js";
 import checkProduct from "../middlewares/checkProduct.js";
 import {
   prodImageUpload,
@@ -19,13 +19,30 @@ import {
 const router = express.Router();
 
 router.route("/products").get(getProducts);
-router.route("/new-product").post(prodImageUpload, checkProduct, newProduct);
+router
+  .route("/new-product")
+  .post(
+    isAuthenticated,
+    authorizeRoles("admin"),
+    prodImageUpload,
+    checkProduct,
+    newProduct
+  );
 router
   .route("/products/:id")
   .get(productDetails)
-  .put(updateProduct)
-  .delete(deleteProduct);
-router.route("/delete-product-image/:id").put(deleteProductImage);
-router.route("/add-product-image/:id").post(singleImageUpload, addProductImage);
+  .put(isAuthenticated, authorizeRoles("admin"), updateProduct)
+  .delete(isAuthenticated, authorizeRoles("admin"), deleteProduct);
+router
+  .route("/delete-product-image/:id")
+  .put(isAuthenticated, authorizeRoles("admin"), deleteProductImage);
+router
+  .route("/add-product-image/:id")
+  .post(
+    isAuthenticated,
+    authorizeRoles("admin"),
+    singleImageUpload,
+    addProductImage
+  );
 
 export default router;
