@@ -94,26 +94,30 @@ export const deleteProductImage = checkAsyncError(async (req, res, next) => {
 
   let prodImages = product.images;
 
-  const { imageName } = req.body;
+  if (prodImages.length > 1) {
+    const { imageName } = req.body;
 
-  deleteImage(imageName);
+    deleteImage(imageName);
 
-  prodImages = prodImages.filter((prod) => prod !== imageName);
+    prodImages = prodImages.filter((prod) => prod !== imageName);
 
-  product = await Product.findByIdAndUpdate(
-    req.params.id,
-    { images: prodImages },
-    {
-      new: true,
-      runValidators: true,
-      useFindAndModify: false,
-    }
-  );
+    product = await Product.findByIdAndUpdate(
+      req.params.id,
+      { images: prodImages },
+      {
+        new: true,
+        runValidators: true,
+        useFindAndModify: false,
+      }
+    );
 
-  res.status(200).json({
-    success: true,
-    product,
-  });
+    res.status(200).json({
+      success: true,
+      product,
+    });
+  } else {
+    next(new ErrorHandler("This product must have at least 1 image", 400));
+  }
 });
 
 // Add Product Image
