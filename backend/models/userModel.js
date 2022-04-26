@@ -27,8 +27,8 @@ const userSchema = new mongoose.Schema({
       message:
         "Password should have 8 characters, minimum 1 small letter, 1 capital letter, 1 symbol and 1 number",
     },
+    select: false,
   },
-  select: false,
   avatar: {
     type: String,
   },

@@ -1,12 +1,8 @@
-import fs, { unlink } from "fs";
-import path from "path";
-
 // internal
 import checkAsyncError from "../middlewares/checkAsyncError.js";
 import Product from "../models/productModel.js";
+import deleteImage from "../utils/deleteImage.js";
 import ErrorHandler from "../utils/errorHandler.js";
-
-const __dirname = path.resolve();
 
 // Get Products
 export const getProducts = checkAsyncError(async (req, res, next) => {
@@ -97,7 +93,7 @@ export const deleteProductImage = checkAsyncError(async (req, res, next) => {
   if (prodImages.length > 1) {
     const { imageName } = req.body;
 
-    deleteImage(imageName);
+    deleteImage("products", imageName);
 
     prodImages = prodImages.filter((prod) => prod !== imageName);
 
@@ -158,7 +154,7 @@ export const deleteProduct = checkAsyncError(async (req, res, next) => {
 
   const images = product.images;
   for (let i = 0; i < images.length; i++) {
-    deleteImage(images[i]);
+    deleteImage("products", images[i]);
   }
 
   await product.remove();
@@ -169,17 +165,3 @@ export const deleteProduct = checkAsyncError(async (req, res, next) => {
 });
 
 // Helping function
-function deleteImage(filename) {
-  const dir = path.join(__dirname, `/public/uploads/products`);
-  const files = fs.readdirSync(dir);
-  const doesExists = files.some((el) => el === filename);
-
-  if (doesExists) {
-    unlink(
-      path.join(__dirname, `/public/uploads/products/${filename}`),
-      (err) => {
-        if (err) next(new ErrorHandler(err.message, 400));
-      }
-    );
-  }
-}
