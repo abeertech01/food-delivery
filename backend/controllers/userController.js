@@ -1,5 +1,6 @@
 import checkAsyncError from "../middlewares/checkAsyncError.js";
 import User from "../models/userModel.js";
+import deleteImage from "../utils/deleteImage.js";
 import ErrorHandler from "../utils/errorHandler.js";
 import sendToken from "../utils/jwtToken.js";
 
@@ -113,4 +114,95 @@ export const updatePassword = checkAsyncError(async (req, res, next) => {
   await user.save();
 
   sendToken(user, 200, res);
+});
+
+// Get all users - Admin
+export const getAllUsers = checkAsyncError(async (req, res, next) => {
+  const users = await User.find();
+
+  res.status(200).json({
+    success: true,
+    users,
+  });
+});
+
+// Get Single user - Admin
+export const getSingleUser = checkAsyncError(async (req, res, next) => {
+  const user = await User.findById(req.params.id);
+
+  if (!user) {
+    return next(
+      new ErrorHandler(`User does not exist with Id: ${req.params.id}`, 400)
+    );
+  }
+
+  res.status(200).json({
+    success: true,
+    user,
+  });
+});
+
+// Update User Role - Admin
+export const updateUserRole = checkAsyncError(async (req, res, next) => {
+  await User.findByIdAndUpdate(
+    req.params.id,
+    { role: req.body.role },
+    {
+      new: true,
+      runValidators: true,
+      useFindAndModify: false,
+    }
+  );
+
+  res.status(200).json({
+    success: true,
+  });
+});
+
+// Delete User
+export const deleteUser2 = checkAsyncError(async (req, res, next) => {
+  const user = await User.findById(req.params.id);
+  console.log(user);
+
+  if (!user) {
+    return next(
+      new ErrorHandler(
+        `User does not exist with this id: ${req.params.id}`,
+        404
+      )
+    );
+  }
+
+  const avatar = await user.avatar;
+  deleteUser("avatars", avatar);
+
+  await user.remove();
+
+  res.status(200).json({
+    success: true,
+    message: "User deleted successfully",
+  });
+});
+
+export const deleteUser = checkAsyncError(async (req, res, next) => {
+  const user = await User.findById(req.params.id);
+
+  if (!user) {
+    next(
+      new ErrorHandler(
+        `User does not exist with this id: ${req.params.id}`,
+        404
+      )
+    );
+  }
+
+  const avatar = user.avatar;
+  deleteImage("avatars", avatar);
+
+  await user.remove();
+
+  res.status(200).json({
+    success: true,
+    message: "User deleted successfully",
+  });
 });

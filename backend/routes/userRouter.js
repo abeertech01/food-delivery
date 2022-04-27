@@ -1,14 +1,18 @@
 import express from "express";
 
 import {
+  deleteUser,
+  getAllUsers,
+  getSingleUser,
   getUserDetails,
   loginUser,
   logoutUser,
   registerUser,
   updatePassword,
   updateProfile,
+  updateUserRole,
 } from "../controllers/userController.js";
-import { isAuthenticated } from "../middlewares/auth.js";
+import { authorizeRoles, isAuthenticated } from "../middlewares/auth.js";
 import checkAvatar from "../middlewares/checkAvatar.js";
 import { avatarUpload } from "../middlewares/imageUpload.js";
 
@@ -22,5 +26,13 @@ router
   .route("/update-profile")
   .put(isAuthenticated, avatarUpload, checkAvatar, updateProfile);
 router.route("/update-password").put(isAuthenticated, updatePassword);
+router
+  .route("/users")
+  .get(isAuthenticated, authorizeRoles("admin"), getAllUsers);
+router
+  .route("/users/:id")
+  .get(isAuthenticated, authorizeRoles("admin"), getSingleUser)
+  .put(isAuthenticated, authorizeRoles("admin"), updateUserRole)
+  .delete(isAuthenticated, authorizeRoles("admin"), deleteUser);
 
 export default router;
