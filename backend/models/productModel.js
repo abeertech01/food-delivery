@@ -12,6 +12,10 @@ const prodSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please Enter Product Description"],
   },
+  category: {
+    type: String,
+    required: [true, "Please Enter Product Category"],
+  },
   price: {
     type: Number,
     required: [true, "Please Enter Product Price"],
