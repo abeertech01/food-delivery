@@ -1,0 +1,21 @@
+.nav-bar {
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  &__inside {
+    display: grid;
+    grid-template-columns: 8rem auto;
+    gap: 3rem;
+  }
+  &__search-cart {
+    display: grid;
+    grid-template-columns: auto 8rem 2.5rem;
+    gap: 3rem;
+    align-items: center;
+  }
+  &__search-box {
+    display: grid;
+    grid-template-columns: auto 1.3rem;
+    align-items: center;
+  }
+  &__auth-cart {
+  }
+}
