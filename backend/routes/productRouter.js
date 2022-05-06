@@ -4,7 +4,7 @@ import {
   addProductImage,
   deleteProduct,
   deleteProductImage,
-  getProducts,
+  getAllProducts,
   newProduct,
   productDetails,
   updateProduct,
@@ -18,7 +18,7 @@ import {
 
 const router = express.Router();
 
-router.route("/products").get(getProducts);
+router.route("/products").get(getAllProducts);
 router
   .route("/new-product")
   .post(

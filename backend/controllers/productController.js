@@ -3,14 +3,28 @@ import checkAsyncError from "../middlewares/checkAsyncError.js";
 import Product from "../models/productModel.js";
 import deleteImage from "../utils/deleteImage.js";
 import ErrorHandler from "../utils/errorHandler.js";
+import ApiFeatures from "../utils/apiFeatures.js";
 
 // Get Products
-export const getProducts = checkAsyncError(async (req, res, next) => {
-  const products = await Product.find();
+export const getAllProducts = checkAsyncError(async (req, res, next) => {
+  let products = await Product.find();
+
+  const resultPerPage = 8;
+  const productsCount = await Product.countDocuments();
+
+  const apiFeature = new ApiFeatures(Product.find(), req.query)
+    .search()
+    .filterCategory()
+    .pagination(resultPerPage);
+
+  products = await apiFeature.query.clone();
+  // const gotProductsNumber = products.length;
 
   res.status(200).json({
     success: true,
     products,
+    // gotProductsNumber,
+    productsCount,
   });
 });
 
@@ -30,7 +44,7 @@ export const productDetails = checkAsyncError(async (req, res, next) => {
 
 // Create A New Product
 export const newProduct = checkAsyncError(async (req, res, next) => {
-  const { name, description, price, quantity } = req.body;
+  const { name, description, category, price, quantity } = req.body;
 
   const record = await Product.findOne({ name });
 
@@ -46,12 +60,30 @@ export const newProduct = checkAsyncError(async (req, res, next) => {
     const product = new Product({
       name,
       description,
+      category,
       price,
       quantity,
       images: filenames,
     });
 
-    await product.save();
+    const setProduct = await product.save();
+
+    if (!setProduct) {
+      console.log("set Product : ", setProduct);
+      const prodImages = [];
+      for (const img in req.files) {
+        prodImages.push(req.files[img].filename);
+      }
+
+      for (let i = 0; i < prodImages.length; i++) {
+        unlink(
+          path.join(__dirname, `/public/uploads/products/${prodImages[i]}`),
+          (err) => {
+            if (err) next(new ErrorHandler(err.message, 400));
+          }
+        );
+      }
+    }
 
     res.status(201).json({
       success: true,
