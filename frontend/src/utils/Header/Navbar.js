@@ -19,12 +19,12 @@ const Header = () => {
               {/* Navigation buttons */}
               <ul className="flex gap-7 text-lg">
                 <li className="hover:text-lime-500">
-                  <a href="#" className="font-semibold">
+                  <a href="/" className="font-semibold">
                     Home
                   </a>
                 </li>
                 <li className="hover:text-lime-500">
-                  <a href="#" className="font-semibold">
+                  <a href="/products" className="font-semibold">
                     Products
                   </a>
                 </li>

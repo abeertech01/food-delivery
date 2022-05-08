@@ -7,7 +7,7 @@ import ApiFeatures from "../utils/apiFeatures.js";
 
 // Get Products
 export const getAllProducts = checkAsyncError(async (req, res, next) => {
-  let products = await Product.find();
+  const allProducts = await Product.find();
 
   const resultPerPage = 8;
   const productsCount = await Product.countDocuments();
@@ -17,14 +17,15 @@ export const getAllProducts = checkAsyncError(async (req, res, next) => {
     .filterCategory()
     .pagination(resultPerPage);
 
-  products = await apiFeature.query.clone();
-  // const gotProductsNumber = products.length;
+  const products = await apiFeature.query;
+  // products = await apiFeature.query.clone();
 
   res.status(200).json({
     success: true,
+    allProducts,
     products,
-    // gotProductsNumber,
     productsCount,
+    resultPerPage,
   });
 });
 

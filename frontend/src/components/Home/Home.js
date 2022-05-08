@@ -1,7 +1,20 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { getProducts } from "../../redux/actions/productActions";
 
 const Home = () => {
+  const dispatch = useDispatch();
   const categories = ["burger", "pizza", "dessert", "beverage"];
+
+  const navigate = useNavigate();
+
+  const { allProducts } = useSelector((state) => state.product);
+
+  useEffect(() => {
+    dispatch(getProducts("", 1, ""));
+  }, [dispatch]);
+
   return (
     <Fragment>
       <div className="home">
@@ -25,6 +38,7 @@ const Home = () => {
                 <div
                   key={index}
                   className="flex flex-col items-center cursor-pointer"
+                  onClick={() => navigate(`/products/${cate}`)}
                 >
                   <img
                     src={`/images/categories/${cate}.svg`}
@@ -34,7 +48,16 @@ const Home = () => {
                   <h1 className="name uppercase text-lg font-semibold">
                     {cate}
                   </h1>
-                  <p className="text-gray-400">products</p>
+                  <p className="text-gray-400">
+                    {
+                      allProducts.filter((prod) => prod.category === cate)
+                        .length
+                    }{" "}
+                    {allProducts.filter((prod) => prod.category === cate)
+                      .length === 1
+                      ? "product"
+                      : "products"}
+                  </p>
                 </div>
               ))}
           </div>

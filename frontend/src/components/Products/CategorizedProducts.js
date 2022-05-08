@@ -1,21 +1,27 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import { getProducts } from "../../redux/actions/productActions";
 import Product from "./Product";
-import "./Products.scss";
+import "./CategorizedProducts.scss";
 
-const Products = () => {
+const CategorizedProducts = () => {
   const dispatch = useDispatch();
+  const params = useParams();
 
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { loading, products, productsCount, resultPerPage } = useSelector(
+  const { loading, products, allProducts, resultPerPage } = useSelector(
     (state) => state.product
   );
 
   const pageNumFunc = () => {
+    const thisProductNum = allProducts.filter(
+      (prod) => prod.category === params.category
+    ).length;
+    // ------------------
     let pageNum;
-    const division = productsCount / resultPerPage;
+    const division = thisProductNum / resultPerPage;
 
     if (!Number.isInteger(division)) {
       pageNum = Math.trunc(division) + 1;
@@ -51,7 +57,7 @@ const Products = () => {
   };
 
   useEffect(() => {
-    dispatch(getProducts("", currentPage, ""));
+    dispatch(getProducts("", currentPage, params.category));
   }, [dispatch, currentPage]);
   return (
     <Fragment>
@@ -59,20 +65,20 @@ const Products = () => {
         <div>Loading</div>
       ) : (
         <Fragment>
-          <div className="products pb-8">
-            <div className="products__header py-16 mb-16">
-              <h1 className="products__heading flex justify-center text-3xl font-semibold uppercase text-white">
-                All Products
+          <div className="c-products pb-8">
+            <div className="c-products__header py-16 mb-16">
+              <h1 className="c-products__heading flex justify-center text-3xl font-semibold uppercase text-white">
+                {params.category}
               </h1>
             </div>
 
-            <div className="products__products container mx-auto flex justify-center items-center gap-[4rem] flex-wrap mb-16">
+            <div className="c-products__products container mx-auto flex justify-center items-center gap-[4rem] flex-wrap mb-16">
               {products &&
                 products.map((product) => (
                   <Product key={product._id} product={product} />
                 ))}
             </div>
-            <div className="products__pagination container mx-auto flex justify-center">
+            <div className="c-products__pagination container mx-auto flex justify-center">
               <button
                 onClick={() => findPage(-1, "prev")}
                 className="px-2 font-bold border-2 border-lime-600 rounded"
@@ -108,4 +114,4 @@ const Products = () => {
   );
 };
 
-export default Products;
+export default CategorizedProducts;

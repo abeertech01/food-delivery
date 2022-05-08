@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./components/Home/Home";
+import CategorizedProducts from "./components/Products/CategorizedProducts";
 import Products from "./components/Products/Products";
 
 function App() {
@@ -7,6 +8,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/products/:category" element={<CategorizedProducts />} />
         <Route path="/products" element={<Products />} />
       </Routes>
     </BrowserRouter>
