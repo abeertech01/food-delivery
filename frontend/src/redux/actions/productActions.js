@@ -11,10 +11,10 @@ export const getProducts =
     try {
       dispatch({ type: ALL_PRODUCT_REQUEST });
 
-      let link = `http://localhost:4000/api/products?keyword=${keyword}&page=${currentPage}`;
+      let link = `/api/products?keyword=${keyword}&page=${currentPage}`;
 
       if (category) {
-        link = `http://localhost:4000/api/products?keyword=${keyword}&page=${currentPage}&category=${category}`;
+        link = `/api/products?keyword=${keyword}&page=${currentPage}&category=${category}`;
       }
       const { data } = await axios.get(link);
 
