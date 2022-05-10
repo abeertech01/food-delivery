@@ -11,7 +11,7 @@ import errorMiddleware from "./middlewares/error.js";
 const app = express();
 const __dirname = path.resolve();
 
-dotenv.config();
+dotenv.config({ path: "backend/config.env" });
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
