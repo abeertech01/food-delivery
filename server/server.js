@@ -1,7 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
-// import path from "path";
-// import cloudinary from "cloudinary";
+import cors from "cors";
 
 import connectDB from "./config/database.js";
 import routes from "./routes/index.js";
@@ -15,6 +14,7 @@ dotenv.config({ path: "server/config/config.env" });
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
 // Connect Database
 connectDB();
