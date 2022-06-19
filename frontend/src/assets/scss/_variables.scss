@@ -1,9 +1,0 @@
-@use "sass:math";
-
-// colors
-$peach: rgb(231, 83, 83);
-
-// function
-@function rem($size) {
-  @return math.div($size, 16) + rem;
-}
