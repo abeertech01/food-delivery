@@ -1,13 +1,14 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import path from "path";
 
 import connectDB from "./config/database.js";
 import routes from "./routes/index.js";
 import errorMiddleware from "./middlewares/error.js";
 
 const app = express();
-// const __dirname = path.resolve();
+const __dirname = path.resolve();
 
 //Config
 dotenv.config({ path: "server/config/config.env" });
@@ -15,6 +16,7 @@ dotenv.config({ path: "server/config/config.env" });
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+app.use(express.static(path.join(__dirname, "../client/build")));
 
 // Connect Database
 connectDB();
