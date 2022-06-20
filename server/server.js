@@ -8,10 +8,10 @@ import routes from "./routes/index.js";
 import errorMiddleware from "./middlewares/error.js";
 
 const app = express();
-// const __dirname = path.resolve();
+const __dirname = path.resolve();
 
 //Config
-if (process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV === "production") {
   dotenv.config({ path: "server/config/config.env" });
 }
 
