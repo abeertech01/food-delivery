@@ -11,7 +11,7 @@ const app = express();
 const __dirname = path.resolve();
 
 //Config
-if (process.env.NODE_ENV === "production") {
+if (process.env.NODE_ENV !== "production") {
   dotenv.config({ path: "server/config/config.env" });
 }
 
